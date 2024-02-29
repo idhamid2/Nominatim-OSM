@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POI Web Map Application</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+    integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+    crossorigin=""></script>
+
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tomik23/autocomplete@1.8.5/dist/css/autocomplete.min.css" />
+  <script src="https://cdn.jsdelivr.net/gh/tomik23/autocomplete@1.8.5/dist/js/autocomplete.min.js"></script>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+
+  <script src="https://kit.fontawesome.com/bf2411a5ca.js" crossorigin="anonymous"></script>
+  <!-- <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js">
+  </script> -->  
+  <link rel="stylesheet" href="leaflet.awesome-markers.css" />
+
+  <script src='leaflet.awesome-markers.js'></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.0/MarkerCluster.Default.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="home.css" />
+  
+  
+  <script src='osmtogeojson.js'></script>
+
+</head>
+
+<body>
+
+  <!-- Heading part section  -->
+  <div class="container-fluid headerSection">
+
+    <div class="row" style="height:100%">
+      <div class="col-sm-12 headingBar">
+        <h4 style="text-align:center;"> ORS-Nomintaim Web Application</h1>
+      </div> 
+      <div class="col-sm-12 navigationBar">
+        <!-- <h3> Application testing </h3> -->
+        <nav class="navbar navbar-default col-sm-12">
+          <!-- <div class="container-fluid"> -->
+            <div class="navbar-header">
+              <a class="navbar-brand">RegioIT - IT Conslting Firm</a>
+            </div>
+            <ul class="nav navbar-nav">
+              <li id="poi" class="active"><a>POI</a></li>
+              <li class="dropdown"><a class="dropdown-toggle" id="geocoding" data-toggle="dropdown" href="#"> Geocoding
+                  <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li id="addressGeocoding"><a> Address Geocoding</a></li>
+                  <li id="reverseGeocoding"><a>Reverse Geocoding</a></li>
+                </ul>
+              </li>
+              <li id="routing"><a>Routing</a></li>
+            </ul>
+          <!-- </div> -->
+        </nav>
+
+
+      </div>
+
+    </div>
+
+  </div>
+  <!-- end of heading part section  -->
+
+
+
+
+  <div class="container-fluid" style="height: 90%;">
+    <div class="row" style="min-height: 100%; height:100%">
+
+      <!-- left column of web-page -->
+      <div class="col-sm-3" style="background-color:#ebebeb; min-height: 100%; height: 100%;">
+
+        <div id="placeSearchInput">
+          <h4>Search about your location</h4>
+          <div class="auto-search-wrapper loupe">
+            <input type="text" autocomplete="off" id="search" class="full-width" placeholder="Enter the city or location name" />
+          </div>
+        </div>
+
+        
+        <!-- start of POI section -->
+        <section id="poiSection">
+          <br>
+          <h4>Select your POI's Preference</h4>
+          <button type="button" id="transport" class="btn btn-danger">Transport</button>
+          <button type="button" id="education" class="btn btn-success">Schools</button>
+          <button type="button" id="medical" class="btn btn-primary">Hospital</button>
+          <!-- <button type="button" id="hotel" class="btn btn-warning">Hotels</button> -->
+          <button type="button" id="removePOI" class="btn btn-info">Remove All</button>
+        </section>
+        <!-- end of POI section -->
+
+
+        <!-- start of Geocoding section -->
+        <section id="geocodingSection" class="hide">
+          <br>
+
+          <p id="coordinatesDeatilHeading" class="hide"><strong> The deatils of the enterted coordinates are
+              in the following table</strong></p>
+          <p id="addressDeatilHeading" class="hide"><strong> The deatils of the searched location on
+              the Map are in the following table</strong></p>
+
+          <div id="reverseGeocodingInput" class="hide">
+
+            <label class="coordinatesInput">
+              <strong>Latitude:</strong>
+              <input type="number" id="latitude" />
+            </label>
+
+            <label class="coordinatesInput">
+              <strong>Longitude:</strong>
+              <input type="number" id="longitude" />
+            </label>
+            <br>
+            <button type="button" class="btn btn-primary" onclick="getInputValue()">Submit</button> <br>
+          </div>
+          
+
+
+        </section>
+        <!-- end of Geocoding section -->
+
+        <!-- start of Routing section -->
+        <section id="routingSection" class="hide">
+
+          <div id="placeSearchInput2">
+            <br>
+          
+            <div class="auto-search-wrapper loupe">
+              <input type="text" autocomplete="off" id="search2" class="full-width" placeholder="Enter the city or location name" />
+            </div>
+            <br><br>
+            <h4>Select your Routing Profile</h4>
+            <div id="routingProfile" class="routingProfile">
+              <img src="img/carIcon1.jpg" id = "drivingRoutingProfile" alt="Car Routing" class="routingProfileImg" >
+              <img src="img/cycleIcon.svg" id = "cycleRoutingProfile" alt="Cycle Routing" class="routingProfileImg">
+              <img src="img/walkIcon.svg" id = "walkRoutingProfile" alt="Wlak Routing" class="routingProfileImg">
+
+            </div>
+            <br><br>
+            <button type="button" class="btn btn-primary" onclick="getDirections()">Get Diections</button> <br>
+          </div>
+
+        </section>
+<br>
+        <div id="tableDiv" class="hide">
+          <table id="tbl">
+            <thead>
+              <tr>
+                <th>Property Name</th>
+                <th>Property Values</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+
+
+
+      </div>
+
+      <!-- Map Section Part // Right column of web-page -->
+      <div class="col-sm-9" style="background-color:#ffe5e5; min-height: 100%; height: 100%; margin: 0%; padding: 0%;">
+
+        <div id="map"></div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- search container -->
+  <!-- <div class="container">
+        <div class="row">
+          <h4>AUTOCOMPLETE + GEOCODING</h4>
+          <div class="auto-search-wrapper">
+            <input
+              type="text"
+              autocomplete="off"
+              id="search"
+              placeholder="enter the city name"
+            />
+          </div>
+        </div>
+      </div>
+      
+    <div id="map"></div> -->
+
+</body>
+<script src="home.js"></script>
+
+</html>
